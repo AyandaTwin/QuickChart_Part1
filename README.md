@@ -1,5 +1,13 @@
 # QuickChat - Part 1 (PROG5121 POE)
 
+## Author & Academic Information
+* **Author**: Ayanda Sosibo
+*  **Student Number**: ST10482388
+*  **Module**: PROG5121
+*  **Assessment**: Portfolio of Evidence (POE) - Part 1
+
+  ---
+  
 ## Project Overview
 QuickChat Part 1 is a Java-based console application developed for the **PROG5121 (Programming 1A)** Portfolio of Evidence (POE). The application serves as the core authentication module for the QuickChat messaging system, establishing a secure baseline for user registration, input validation, and user authentication.
 
@@ -41,6 +49,11 @@ The architecture emphasizes object-oriented programming (OOP) principles and a c
 
 ---
 
+## Academic References
+JUnit Team, (2024). JUnit 5 User Guide. Available at: https://junit.org/junit5/current/user-guide/ [Accessed 25 September 2025].
+
+---
+
 ## Repository Structure
 
 ```text
@@ -57,4 +70,5 @@ QuickChart_Part1/
 │               └── LoginTest.java           # Automated JUnit 5 test suite
 ├── pom.xml                                  # Maven dependencies and build configuration
 └── README.md                                # Project documentation
+
 
