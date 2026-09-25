@@ -2,8 +2,20 @@ package com.student.quickchat_part1;
 
 import java.util.Scanner;
 
+/**
+ * Main console application runner for QuickChat Part 1.
+ * Provides the interactive terminal loop for user registration and login verification.
+ * 
+ * @author ST10482388
+ * @version 1.0
+ */
 public class QuickChat_Part1 {
 
+    /**
+     * Main entry point for the QuickChat registration and login application.
+     * 
+     * @param args Command line arguments
+     */
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         Login loginApp = new Login();
@@ -19,7 +31,7 @@ public class QuickChat_Part1 {
         String lastName = scanner.nextLine();
         loginApp.setLastName(lastName);
 
-        // Registration Loop
+        // Interactive Registration Loop
         boolean registrationSuccessful = false;
         while (!registrationSuccessful) {
             System.out.println("\n--- REGISTRATION ---");
@@ -32,35 +44,28 @@ public class QuickChat_Part1 {
             System.out.print("Enter Cell Phone Number (+27...): ");
             String cellNumber = scanner.nextLine();
 
-            String statusMessage = loginApp.registerUser(username, password, cellNumber);
-            System.out.println("\n" + statusMessage);
+            String registrationMessage = loginApp.registerUser(username, password, cellNumber);
+            System.out.println(registrationMessage);
 
-            if (statusMessage.contains("successfully added")) {
+            if (registrationMessage.contains("successfully")) {
                 registrationSuccessful = true;
-            } else {
-                System.out.println("\nPlease re-enter details according to constraints.");
             }
         }
 
-        // Login Loop
+        // Interactive Login Loop
         System.out.println("\n=== WELCOME TO QUICKCHAT LOGIN ===");
-        boolean loginSuccessful = false;
+        boolean loginSuccess = false;
 
-        while (!loginSuccessful) {
-            System.out.print("\nEnter Username: ");
+        while (!loginSuccess) {
+            System.out.print("Enter Username: ");
             String loginUsername = scanner.nextLine();
 
             System.out.print("Enter Password: ");
             String loginPassword = scanner.nextLine();
 
-            boolean authenticated = loginApp.loginUser(loginUsername, loginPassword);
-            String loginMessage = loginApp.returnLoginStatus(authenticated);
-
-            System.out.println(loginMessage);
-
-            if (authenticated) {
-                loginSuccessful = true;
-            }
+            loginSuccess = loginApp.loginUser(loginUsername, loginPassword);
+            String statusMessage = loginApp.returnLoginStatus(loginSuccess);
+            System.out.println(statusMessage);
         }
 
         scanner.close();

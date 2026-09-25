@@ -1,42 +1,83 @@
 package com.student.quickchat_part1;
 
-import java.util.regex.Pattern;
-
 /**
- * The Login class handles user registration rules and authentication verifications.
+ * Class representing user authentication and validation logic for QuickChat.
+ * Handles username formatting, password complexity, SA phone number validation,
+ * and user registration/login operations.
+ * 
+ * @author ST10482388
+ * @version 1.0
  */
 public class Login {
 
-    // Instance variables to store registered user credentials
+    private String firstName;
+    private String lastName;
     private String registeredUsername;
     private String registeredPassword;
     private String cellPhoneNumber;
-    private String firstName;
-    private String lastName;
 
-    // Getters and Setters
-    public String getRegisteredUsername() { return registeredUsername; }
-    public String getRegisteredPassword() { return registeredPassword; }
-    public String getCellPhoneNumber() { return cellPhoneNumber; }
-    public String getFirstName() { return firstName; }
-    public String getLastName() { return lastName; }
+    public Login() {
+    }
 
-    public void setFirstName(String firstName) { this.firstName = firstName; }
-    public void setLastName(String lastName) { this.lastName = lastName; }
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getRegisteredUsername() {
+        return registeredUsername;
+    }
+
+    public void setRegisteredUsername(String registeredUsername) {
+        this.registeredUsername = registeredUsername;
+    }
+
+    public String getRegisteredPassword() {
+        return registeredPassword;
+    }
+
+    public void setRegisteredPassword(String registeredPassword) {
+        this.registeredPassword = registeredPassword;
+    }
+
+    public String getCellPhoneNumber() {
+        return cellPhoneNumber;
+    }
+
+    public void setCellPhoneNumber(String cellPhoneNumber) {
+        this.cellPhoneNumber = cellPhoneNumber;
+    }
 
     /**
-     * Checks if the username contains an underscore (_) and is no more than 5 characters.
+     * Validates that the username contains an underscore (_) and is no more than 5 characters long.
+     * 
+     * @param username The username input string to evaluate
+     * @return true if formatting criteria are met, false otherwise
      */
     public boolean checkUserName(String username) {
         return username != null && username.contains("_") && username.length() <= 5;
     }
 
     /**
-     * Ensures password meets complexity requirements:
-     * - At least 8 characters long
-     * - Contains a capital letter
-     * - Contains a number
-     * - Contains a special character
+     * Checks whether a password satisfies complexity rules:
+     * - Minimum 8 characters long
+     * - Contains at least one uppercase letter
+     * - Contains at least one digit
+     * - Contains at least one special character
+     * 
+     * @param password The password string to evaluate
+     * @return true if all criteria are satisfied, false otherwise
      */
     public boolean checkPasswordComplexity(String password) {
         if (password == null || password.length() < 8) {
@@ -61,39 +102,44 @@ public class Login {
     }
 
     /**
-     * Checks if the SA cell phone number starts with international code (+27)
-     * and contains 10 digits following the country code (+27 followed by 9 digits = 12 total chars).
+     * Validates South African cell phone numbers in international E.164 format (+27 followed by 9 digits).
      * 
-     * Reference Attribution:
-     * Regular Expression structure adapted from standard E.164 South African format checks.
-     * Source: OWASP Validation Regex Repository (https://owasp.org/www-community/OWASP_Validation_Regex_Index)
+     * REFERENCE ATTRIBUTION:
+     * International phone number validation structure adapted from standard E.164 specifications.
+     * Source: OWASP Validation Regex Repository
+     * URL: https://owasp.org/www-community/OWASP_Validation_Regex_Repository
+     * 
+     * @param cellNumber The phone number string to validate
+     * @return true if the format matches international SA standards, false otherwise
      */
     public boolean checkCellPhoneNumber(String cellNumber) {
         if (cellNumber == null) {
             return false;
         }
-        // Regex: starts with +27 followed by exactly 9 digits (total string length 12)
-        String regex = "^\\+27\\d{9}$";
-        return Pattern.matches(regex, cellNumber);
+        return cellNumber.matches("^\\+27[0-9]{9}$");
     }
 
     /**
-     * Evaluates all registration criteria and returns the resulting status message.
+     * Registers a new user if username, password, and cell phone number meet validation requirements.
+     * 
+     * @param username Desired username
+     * @param password Desired password
+     * @param cellNumber User's cell phone number
+     * @return A status message describing the outcome of registration
      */
     public String registerUser(String username, String password, String cellNumber) {
         if (!checkUserName(username)) {
-            return "Username is not correctly formatted; please ensure that your username contains an underscore and is no more than five characters in length.";
+            return "Username is not correctly formatted, please ensure that your username contains an underscore and is no more than 5 characters in length.";
         }
 
         if (!checkPasswordComplexity(password)) {
-            return "Password is not correctly formatted; please ensure that the password contains at least eight characters, a capital letter, a number, and a special character.";
+            return "Password is not correctly formatted, please ensure that the password contains at least 8 characters, a capital letter, a number and a special character.";
         }
 
         if (!checkCellPhoneNumber(cellNumber)) {
-            return "Cell phone number incorrectly formatted or does not contain international code.";
+            return "Cell phone number is incorrectly formatted or invalid. Must start with +27 followed by 9 digits.";
         }
 
-        // If all conditions pass, save the details
         this.registeredUsername = username;
         this.registeredPassword = password;
         this.cellPhoneNumber = cellNumber;
@@ -102,24 +148,30 @@ public class Login {
     }
 
     /**
-     * Verifies provided login credentials against stored registration credentials.
+     * Verifies if entered credentials match stored user details.
+     * 
+     * @param username Input username
+     * @param password Input password
+     * @return true if credentials match, false otherwise
      */
-    public boolean loginUser(String enteredUsername, String enteredPassword) {
+    public boolean loginUser(String username, String password) {
         if (this.registeredUsername == null || this.registeredPassword == null) {
             return false;
         }
-        return this.registeredUsername.equals(enteredUsername) && 
-               this.registeredPassword.equals(enteredPassword);
+        return this.registeredUsername.equals(username) && this.registeredPassword.equals(password);
     }
 
     /**
-     * Returns appropriate login response message based on authentication status.
+     * Returns welcome or error message based on login success.
+     * 
+     * @param loginSuccess Status of login attempt
+     * @return Formatted status string
      */
-    public String returnLoginStatus(boolean isLoggedIn) {
-        if (isLoggedIn) {
-            return "Welcome " + firstName + ", " + lastName + " it is great to see you again.";
+    public String returnLoginStatus(boolean loginSuccess) {
+        if (loginSuccess) {
+            return "Welcome " + (firstName != null ? firstName : "") + " " + (lastName != null ? lastName : "") + " it is great to see you again.";
         } else {
-            return "Username or password incorrect, please try again.";
+            return "Username or password incorrect, please try again";
         }
     }
 }
