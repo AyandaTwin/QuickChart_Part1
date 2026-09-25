@@ -1,0 +1,48 @@
+cd C:\Users\ayand\Documents\NetBeansProjects\QuickChat_Part1; "JAVA_HOME=C:\\Program Files\\Apache NetBeans\\jdk" cmd /c "\"C:\\Program Files\\Apache NetBeans\\java\\maven\\bin\\mvn.cmd\" -Dexec.vmArgs= \"-Dexec.args=${exec.vmArgs} -classpath %classpath ${exec.mainClass} ${exec.appArgs}\" -Dexec.appArgs= -Dexec.mainClass=com.student.quickchat_part1.QuickChat_Part1 \"-Dexec.executable=C:\\Program Files\\Apache NetBeans\\jdk\\bin\\java.exe\" \"-Dmaven.ext.class.path=C:\\Program Files\\Apache NetBeans\\java\\maven-nblib\\netbeans-eventspy.jar\" --no-transfer-progress process-classes org.codehaus.mojo:exec-maven-plugin:3.6.3:exec"
+Scanning for projects...
+
+--------------------< com.student:QuickChat_Part1 >---------------------
+Building QuickChat_Part1 1.0-SNAPSHOT
+  from pom.xml
+--------------------------------[ jar ]---------------------------------
+
+--- resources:3.4.0:resources (default-resources) @ QuickChat_Part1 ---
+skip non existing resourceDirectory C:\Users\ayand\Documents\NetBeansProjects\QuickChat_Part1\src\main\resources
+
+--- compiler:3.15.0:compile (default-compile) @ QuickChat_Part1 ---
+Nothing to compile - all classes are up to date.
+
+--- exec:3.6.3:exec (default-cli) @ QuickChat_Part1 ---
+=== WELCOME TO QUICKCHAT REGISTRATION ===
+Enter First Name: Kyle
+Enter Last Name: 
+
+--- REGISTRATION ---
+Enter Username: kyl_1
+Enter Password: ch&&sec@ke99!
+Enter Cell Phone Number (+27...): +27838968976
+
+Password is not correctly formatted; please ensure that the password contains at least eight characters, a capital letter, a number, and a special character.
+
+Please re-enter details according to constraints.
+
+--- REGISTRATION ---
+Enter Username: kyl_1
+Enter Password: Ch&&sec@ke99!
+Enter Cell Phone Number (+27...): +27838968976
+
+Username successfully captured.
+Password successfully captured.
+Cell phone number successfully added.
+
+=== WELCOME TO QUICKCHAT LOGIN ===
+
+Enter Username: kyl_1
+Enter Password: Ch&&sec@ke99!
+Welcome Kyle,  it is great to see you again.
+------------------------------------------------------------------------
+BUILD SUCCESS
+------------------------------------------------------------------------
+Total time:  51:40 min
+Finished at: 2026-09-24T22:43:17+02:00
+------------------------------------------------------------------------
