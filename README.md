@@ -5,6 +5,7 @@
 *  **Student Number**: ST10482388
 *  **Module**: PROG5121
 *  **Assessment**: Portfolio of Evidence (POE) - Part 1
+*  **Lecturer**: Mr Colly
 
   ---
   
