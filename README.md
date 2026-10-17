@@ -1,6 +1,7 @@
 # QuickChat - Part 1 & Part 2 (PROG5121 POE)
 
 ## Author & Academic Information
+*  **Lecturer**: Mr Colly
 - **Author**: Ayanda Sosibo
 - **Student Number**: ST10482388
 - **Module**: PROG5121
@@ -94,4 +95,5 @@ QuickChart_Part1/
 │               └── MessageTest.java         # Part 2 JUnit 5 test suite
 ├── messages.json                            # Local JSON storage output
 ├── pom.xml                                  # Maven dependencies and build configuration
+└── README.md                                # Project documentation                  # Project documentation and references
 └── README.md                                # Project documentation
