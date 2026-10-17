@@ -22,4 +22,4 @@ jobs:
         cache: maven
         
     - name: Run Unit Tests with Maven
-      run: mvn clean test
+      run: mvn clean tests
