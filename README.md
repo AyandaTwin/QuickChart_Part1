@@ -95,3 +95,4 @@ QuickChart_Part1/
 ├── messages.json                            # Local JSON storage output
 ├── pom.xml                                  # Maven dependencies and build configuration
 └── README.md                                # Project documentation                  # Project documentation and references
+└── README.md                                # Project documentation
