@@ -4,11 +4,11 @@ import java.util.Random;
 import java.util.Scanner;
 
 /**
- * Main console application runner for QuickChat Part 3.
- * Handles registration, authentication, main menu navigation, message sending, and stored message operations.
+ * Main console application runner for QuickChat Part 2.
+ * Handles registration, authentication, main menu navigation, and message sending.
  * 
  * @author Ayanda Sosibo (ST10482388)
- * @version 3.0
+ * @version 2.0
  */
 public class QuickChat_Part1 {
 
@@ -64,7 +64,7 @@ public class QuickChat_Part1 {
             System.out.println(statusMessage);
         }
 
-        // --- PART 2 & PART 3: MAIN MENU & OPERATIONS ---
+        // --- PART 2: MAIN MENU & MESSAGE SENDING ---
         if (loginSuccess) {
             System.out.println("\nWelcome to QuickChat.");
 
@@ -77,8 +77,7 @@ public class QuickChat_Part1 {
                 System.out.println("1) Send Messages");
                 System.out.println("2) Show recently sent messages");
                 System.out.println("3) Quit");
-                System.out.println("4) Stored Messages");
-                System.out.print("Please enter option (1-4): ");
+                System.out.print("Please enter option (1-3): ");
 
                 String choiceInput = scanner.nextLine();
 
@@ -157,7 +156,6 @@ public class QuickChat_Part1 {
 
                             if (actionChoice == 1) {
                                 totalSentMessagesCount++;
-                                Message.addSentMessageRecord(messageID, recipient, messageText, msg.getMessageHash());
                             }
                         }
 
@@ -173,62 +171,8 @@ public class QuickChat_Part1 {
                         keepRunning = false;
                         break;
 
-                    case "4":
-                        // --- PART 3: STORED MESSAGES SUB-MENU ---
-                        // Optionally load from messages.json first if available
-                        Message.loadStoredMessagesFromJson("messages.json");
-
-                        boolean backToMain = false;
-                        while (!backToMain) {
-                            System.out.println("\n--- Stored Messages Menu ---");
-                            System.out.println("a) Display sender and recipient of all stored messages");
-                            System.out.println("b) Display longest stored message");
-                            System.out.println("c) Search for a message ID");
-                            System.out.println("d) Search messages by recipient");
-                            System.out.println("e) Delete message using message hash");
-                            System.out.println("f) Display full message report");
-                            System.out.println("g) Return to Main Menu");
-                            System.out.print("Choose an option (a-g): ");
-
-                            String subChoice = scanner.nextLine().trim().toLowerCase();
-                            switch (subChoice) {
-                                case "a":
-                                    System.out.println("\n--- Stored Senders & Recipients ---");
-                                    System.out.println(Message.displayStoredSendersAndRecipients());
-                                    break;
-                                case "b":
-                                    System.out.println("\n--- Longest Stored Message ---");
-                                    System.out.println(Message.displayLongestMessage());
-                                    break;
-                                case "c":
-                                    System.out.print("Enter Message ID to search: ");
-                                    String searchId = scanner.nextLine();
-                                    System.out.println(Message.searchByMessageID(searchId));
-                                    break;
-                                case "d":
-                                    System.out.print("Enter Recipient cell number to search: ");
-                                    String searchRecipient = scanner.nextLine();
-                                    System.out.println(Message.searchByRecipient(searchRecipient));
-                                    break;
-                                case "e":
-                                    System.out.print("Enter Message Hash to delete: ");
-                                    String hashToDelete = scanner.nextLine();
-                                    System.out.println(Message.deleteMessageByHash(hashToDelete));
-                                    break;
-                                case "f":
-                                    System.out.println("\n" + Message.displayReport());
-                                    break;
-                                case "g":
-                                    backToMain = true;
-                                    break;
-                                default:
-                                    System.out.println("Invalid option. Please choose between a and g.");
-                            }
-                        }
-                        break;
-
                     default:
-                        System.out.println("Invalid option. Please enter 1, 2, 3, or 4.");
+                        System.out.println("Invalid option. Please enter 1, 2, or 3.");
                         break;
                 }
             }
