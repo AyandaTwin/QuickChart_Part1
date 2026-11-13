@@ -1,14 +1,18 @@
 package com.student.quickchat_part1;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Class representing a single message payload, formatting, validation,
- * and JSON storage handling for QuickChat Part 2.
+ * and JSON storage handling for QuickChat Part 2 and Part 3.
  * 
  * @author Ayanda Sosibo (ST10482388)
- * @version 2.0
+ * @version 3.0
  */
 public class Message {
 
@@ -18,6 +22,16 @@ public class Message {
     private String messageText;
     private String messageHash;
     private String actionStatus; // "Sent", "Disregarded", or "Stored"
+
+    // --- PART 3: Parallel Lists & Collections ---
+    private static final List<String> sentMessages = new ArrayList<>();
+    private static final List<String> disregardedMessages = new ArrayList<>();
+    private static final List<String> storedMessages = new ArrayList<>();
+    private static final List<String> messageHashes = new ArrayList<>();
+    private static final List<String> messageIDs = new ArrayList<>();
+    private static final List<String> sentRecipients = new ArrayList<>();
+    private static final List<String> storedRecipients = new ArrayList<>();
+    private static final List<String> storedSenders = new ArrayList<>();
 
     // Constructor
     public Message(String messageID, int messageNumber, String recipientCell, String messageText) {
@@ -50,7 +64,12 @@ public class Message {
     public String getActionStatus() { return actionStatus; }
     public void setActionStatus(String actionStatus) { this.actionStatus = actionStatus; }
 
-    // --- RUBRIC REQUIRED METHODS ---
+    public static List<String> getSentMessages() { return sentMessages; }
+    public static List<String> getStoredMessages() { return storedMessages; }
+    public static List<String> getMessageIDs() { return messageIDs; }
+    public static List<String> getMessageHashes() { return messageHashes; }
+
+    // --- RUBRIC REQUIRED METHODS (PART 2) ---
 
     /**
      * Checks if the Message ID is not more than 10 characters long.
@@ -72,23 +91,18 @@ public class Message {
 
     /**
      * Creates and returns the Message Hash in all uppercase.
-     * Format: 00:0:FIRSTLAST (First 2 digits of ID : Message Number : First and Last word of message)
      */
     public String createMessageHash() {
         if (messageID == null || messageText == null || messageID.length() < 2) {
             return "";
         }
 
-        // Get first two digits of Message ID
         String idPrefix = messageID.substring(0, 2);
-
-        // Extract first and last words from message
         String trimmed = messageText.trim();
         String[] words = trimmed.split("\\s+");
         String firstWord = words[0];
         String lastWord = words[words.length - 1];
 
-        // Combine into all-uppercase hash
         String rawHash = idPrefix + ":" + messageNumber + ":" + firstWord + lastWord;
         return rawHash.toUpperCase();
     }
@@ -109,9 +123,6 @@ public class Message {
 
     /**
      * Handles message action selection (Send, Disregard, or Store).
-     * Option 1: Send
-     * Option 2: Disregard
-     * Option 3: Store
      */
     public String SentMessage(int choice) {
         switch (choice) {
@@ -131,8 +142,7 @@ public class Message {
     }
 
     /**
-     * Formats and returns all details of the message in rubric order:
-     * Message ID, Message Hash, Recipient, Message.
+     * Formats and returns all details of the message in rubric order.
      */
     public String printMessages() {
         return "Message ID: " + messageID + "\n" +
@@ -143,8 +153,6 @@ public class Message {
 
     /**
      * Stores message details in a local JSON file (messages.json).
-     * REFERENCE ATTRIBUTION:
-     * Basic JSON file writing implemented using Standard Java File I/O.
      */
     public void storeMessage() {
         String jsonPayload = String.format(
@@ -157,5 +165,148 @@ public class Message {
         } catch (IOException e) {
             System.err.println("Error saving message to JSON: " + e.getMessage());
         }
+    }
+
+    // --- PART 3 METHODS & ARRAY POPULATION ---
+
+    /**
+     * Reads stored messages from 'messages.json' into arrays/lists[cite: 28].
+     * Attribution: File reading logic adapted from Oracle Java Documentation (2024).
+     */
+    public static void loadStoredMessagesFromJson(String filePath) {
+        storedMessages.clear();
+        storedRecipients.clear();
+        
+        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                if (line.contains("message") || line.contains("text")) {
+                    storedMessages.add(line.trim());
+                } else if (line.contains("recipient") || line.contains("cell")) {
+                    storedRecipients.add(line.trim());
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Error reading JSON file: " + e.getMessage());
+        }
+    }
+
+    public static void addSentMessageRecord(String id, String recipient, String message, String hash) {
+        messageIDs.add(id);
+        sentRecipients.add(recipient);
+        sentMessages.add(message);
+        messageHashes.add(hash);
+    }
+
+    public static void addStoredMessageRecord(String sender, String recipient, String message, String hash, String id) {
+        storedSenders.add(sender);
+        storedRecipients.add(recipient);
+        storedMessages.add(message);
+        messageHashes.add(hash);
+        messageIDs.add(id);
+    }
+
+    /**
+     * 2a. Display the sender and recipient of all stored messages[cite: 28].
+     */
+    public static String displayStoredSendersAndRecipients() {
+        if (storedMessages.isEmpty()) {
+            return "No stored messages found.";
+        }
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < storedMessages.size(); i++) {
+            String sender = (i < storedSenders.size()) ? storedSenders.get(i) : "Unknown";
+            String recipient = (i < storedRecipients.size()) ? storedRecipients.get(i) : "Unknown";
+            sb.append("Sender: ").append(sender)
+              .append(" | Recipient: ").append(recipient).append("\n");
+        }
+        return sb.toString().trim();
+    }
+
+    /**
+     * 2b. Display the longest stored (or sent) message[cite: 28].
+     */
+    public static String displayLongestMessage() {
+        String longest = "";
+        for (String msg : storedMessages) {
+            if (msg.length() > longest.length()) {
+                longest = msg;
+            }
+        }
+        for (String msg : sentMessages) {
+            if (msg.length() > longest.length()) {
+                longest = msg;
+            }
+        }
+        return longest.isEmpty() ? "No messages available." : longest;
+    }
+
+    /**
+     * 2c. Search for a message ID and display the corresponding recipient and message[cite: 28].
+     */
+    public static String searchByMessageID(String targetID) {
+        for (int i = 0; i < sentMessages.size(); i++) {
+            if (i < messageIDs.size() && messageIDs.get(i).equals(targetID)) {
+                return "Recipient: " + sentRecipients.get(i) + " | Message: " + sentMessages.get(i);
+            }
+        }
+        return "Message ID not found.";
+    }
+
+    /**
+     * 2d. Search for all messages sent or stored regarding a particular recipient[cite: 28].
+     */
+    public static String searchByRecipient(String targetRecipient) {
+        StringBuilder results = new StringBuilder();
+        for (int i = 0; i < sentRecipients.size(); i++) {
+            if (sentRecipients.get(i).equals(targetRecipient)) {
+                results.append(sentMessages.get(i)).append("\n");
+            }
+        }
+        for (int i = 0; i < storedRecipients.size(); i++) {
+            if (storedRecipients.get(i).equals(targetRecipient)) {
+                results.append(storedMessages.get(i)).append("\n");
+            }
+        }
+        String output = results.toString().trim();
+        return output.isEmpty() ? "No messages found for recipient: " + targetRecipient : output;
+    }
+
+    /**
+     * 2e. Delete a message using the message hash[cite: 28].
+     */
+    public static String deleteMessageByHash(String targetHash) {
+        for (int i = 0; i < messageHashes.size(); i++) {
+            if (messageHashes.get(i).equalsIgnoreCase(targetHash)) {
+                String deletedMsg = "";
+                if (i < storedMessages.size()) {
+                    deletedMsg = storedMessages.remove(i);
+                    if (i < storedRecipients.size()) storedRecipients.remove(i);
+                    if (i < storedSenders.size()) storedSenders.remove(i);
+                } else if (i < sentMessages.size()) {
+                    deletedMsg = sentMessages.remove(i);
+                    if (i < sentRecipients.size()) sentRecipients.remove(i);
+                }
+                messageHashes.remove(i);
+                if (i < messageIDs.size()) messageIDs.remove(i);
+                return "Message \"" + deletedMsg + "\" successfully deleted.";
+            }
+        }
+        return "Message hash not found.";
+    }
+
+    /**
+     * 2f. Display a report that lists the full details of all sent/stored messages[cite: 28].
+     */
+    public static String displayReport() {
+        StringBuilder report = new StringBuilder();
+        for (int i = 0; i < sentMessages.size(); i++) {
+            String hash = (i < messageHashes.size()) ? messageHashes.get(i) : "N/A";
+            String recipient = (i < sentRecipients.size()) ? sentRecipients.get(i) : "N/A";
+            report.append("Message Hash: ").append(hash)
+                  .append(" | Recipient: ").append(recipient)
+                  .append(" | Message: ").append(sentMessages.get(i)).append("\n");
+        }
+        return report.toString().trim();
     }
 }
