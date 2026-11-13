@@ -9,8 +9,8 @@ import java.util.List;
 
 /**
  * Class representing a single message payload, formatting, validation,
- * and JSON storage handling for QuickChat Part 2 and Part 3.
- * 
+ * JSON storage/loading, array reporting, search, and deletion for QuickChat.
+ *
  * @author Ayanda Sosibo (ST10482388)
  * @version 3.0
  */
@@ -32,6 +32,7 @@ public class Message {
     private static final List<String> sentRecipients = new ArrayList<>();
     private static final List<String> storedRecipients = new ArrayList<>();
     private static final List<String> storedSenders = new ArrayList<>();
+    private static final List<String> messageSources = new ArrayList<>();
 
     // Constructor
     public Message(String messageID, int messageNumber, String recipientCell, String messageText) {
@@ -170,13 +171,12 @@ public class Message {
     // --- PART 3 METHODS & ARRAY POPULATION ---
 
     /**
-     * Reads stored messages from 'messages.json' into arrays/lists[cite: 28].
-     * Attribution: File reading logic adapted from Oracle Java Documentation (2024).
+     * Reads stored messages from a JSON file into arrays/lists.
      */
     public static void loadStoredMessagesFromJson(String filePath) {
         storedMessages.clear();
         storedRecipients.clear();
-        
+
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             String line;
             while ((line = br.readLine()) != null) {
@@ -196,6 +196,7 @@ public class Message {
         sentRecipients.add(recipient);
         sentMessages.add(message);
         messageHashes.add(hash);
+        messageSources.add("SENT");
     }
 
     public static void addStoredMessageRecord(String sender, String recipient, String message, String hash, String id) {
@@ -204,10 +205,11 @@ public class Message {
         storedMessages.add(message);
         messageHashes.add(hash);
         messageIDs.add(id);
+        messageSources.add("STORED");
     }
 
     /**
-     * 2a. Display the sender and recipient of all stored messages[cite: 28].
+     * 2a. Display the sender and recipient of all stored messages.
      */
     public static String displayStoredSendersAndRecipients() {
         if (storedMessages.isEmpty()) {
@@ -224,7 +226,7 @@ public class Message {
     }
 
     /**
-     * 2b. Display the longest stored (or sent) message[cite: 28].
+     * 2b. Display the longest stored (or sent) message.
      */
     public static String displayLongestMessage() {
         String longest = "";
@@ -242,7 +244,7 @@ public class Message {
     }
 
     /**
-     * 2c. Search for a message ID and display the corresponding recipient and message[cite: 28].
+     * 2c. Search for a message ID and display the corresponding recipient and message.
      */
     public static String searchByMessageID(String targetID) {
         for (int i = 0; i < sentMessages.size(); i++) {
@@ -254,7 +256,7 @@ public class Message {
     }
 
     /**
-     * 2d. Search for all messages sent or stored regarding a particular recipient[cite: 28].
+     * 2d. Search for all messages sent or stored regarding a particular recipient.
      */
     public static String searchByRecipient(String targetRecipient) {
         StringBuilder results = new StringBuilder();
@@ -273,22 +275,30 @@ public class Message {
     }
 
     /**
-     * 2e. Delete a message using the message hash[cite: 28].
+     * 2e. Delete a message using the message hash.
      */
     public static String deleteMessageByHash(String targetHash) {
         for (int i = 0; i < messageHashes.size(); i++) {
             if (messageHashes.get(i).equalsIgnoreCase(targetHash)) {
+                String source = (i < messageSources.size()) ? messageSources.get(i) : "";
+                int sourceIndex = 0;
+                for (int j = 0; j < i; j++) {
+                    if (j < messageSources.size() && messageSources.get(j).equals(source)) {
+                        sourceIndex++;
+                    }
+                }
                 String deletedMsg = "";
-                if (i < storedMessages.size()) {
-                    deletedMsg = storedMessages.remove(i);
-                    if (i < storedRecipients.size()) storedRecipients.remove(i);
-                    if (i < storedSenders.size()) storedSenders.remove(i);
-                } else if (i < sentMessages.size()) {
-                    deletedMsg = sentMessages.remove(i);
-                    if (i < sentRecipients.size()) sentRecipients.remove(i);
+                if ("STORED".equals(source) && sourceIndex < storedMessages.size()) {
+                    deletedMsg = storedMessages.remove(sourceIndex);
+                    if (sourceIndex < storedRecipients.size()) storedRecipients.remove(sourceIndex);
+                    if (sourceIndex < storedSenders.size()) storedSenders.remove(sourceIndex);
+                } else if ("SENT".equals(source) && sourceIndex < sentMessages.size()) {
+                    deletedMsg = sentMessages.remove(sourceIndex);
+                    if (sourceIndex < sentRecipients.size()) sentRecipients.remove(sourceIndex);
                 }
                 messageHashes.remove(i);
                 if (i < messageIDs.size()) messageIDs.remove(i);
+                if (i < messageSources.size()) messageSources.remove(i);
                 return "Message \"" + deletedMsg + "\" successfully deleted.";
             }
         }
@@ -296,7 +306,7 @@ public class Message {
     }
 
     /**
-     * 2f. Display a report that lists the full details of all sent/stored messages[cite: 28].
+     * 2f. Display a report that lists the full details of all sent/stored messages.
      */
     public static String displayReport() {
         StringBuilder report = new StringBuilder();

@@ -49,7 +49,7 @@ public class MessageTest {
         String[] listFields = {
             "sentMessages", "disregardedMessages", "storedMessages",
             "messageHashes", "messageIDs", "sentRecipients",
-            "storedRecipients", "storedSenders"
+            "storedRecipients", "storedSenders", "messageSources"
         };
         for (String name : listFields) {
             Field field = Message.class.getDeclaredField(name);
